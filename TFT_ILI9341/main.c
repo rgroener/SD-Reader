@@ -1,5 +1,5 @@
 
-//#define F_CPU 8000000UL
+#define F_CPU 8000000UL
 #include <avr/io.h>
 #include <util/delay.h>
 #include <stdio.h>
@@ -10,6 +10,14 @@
 #include <avr/pgmspace.h>
 #include "grn_TWI.h"
 #include <avr/interrupt.h>
+
+#include <string.h>
+//#include "fat.h"
+//#include "fat_config.h"
+//#include "partition.h"
+//#include "sd_raw.h"
+//#include "sd_raw_config.h"
+#include "grn_UART.h"
 
 
 #define POINTCOLOUR PINK
@@ -36,6 +44,23 @@ uint8_t buff[6]= {0};
 // String für Zahlenausgabe
 char string[30] = "";
 
+
+ISR(USART_RX_vect)
+{
+	char received_byte;
+	received_byte = UDR0;
+	
+	if(received_byte=='A')
+	{
+		ili9341_setcursor(20,100);
+	printf("Test");
+	}
+	UDR0 = received_byte;//Echo Byte
+	/*uart_send_u16data(1234);
+	uart_send_char('\n');
+	uart_send_u8data(212);
+	uart_send_char('\n');*/
+} 
 
 ISR (TIMER1_COMPA_vect)
 {
@@ -74,6 +99,8 @@ void init_ili9341(void)
 	ili9341_settextsize(2);
 }
 
+	
+
 
 int main(void)
 {
@@ -81,11 +108,9 @@ int main(void)
 	//display_init();//display initial data
 	
 	color=123;
+		
+	uart_init();
 	
-	
-	
-	
-	TWIInit();
 	//Timer 1 Configuration
 	OCR1A = 0x009C;	//OCR1A = 0x3D08;==1sec
 	TCCR1B |= (1 << WGM12);
@@ -99,27 +124,14 @@ int main(void)
 	
 	ili9341_settextsize(2);
 	_delay_ms(30);
-	ili9341_setcursor(10,120);
-		printf("Hallo Welt");
+	ili9341_setcursor(10,100);
+	printf("Roman Gröner");
+	
 	
 	while(1)
 	{
-		
-		
-	
-	
+		uart_send_string("Hallo");
 
-/*
-ili9341_setcursor(10,120);
-		printf("T: %d C", Temperature);
-		ili9341_setcursor(10,170);
-		printf("T: %d.%d\370 C", vor_komma(Temperature), nach_komma(Temperature));
-		ili9341_setcursor(10,190);
-		printf("A: %d.%2.2d m", vor_komma(altitude), nach_komma(altitude));
-		ili9341_setcursor(10,210);
-		printf("P: %d.%1.2d hPa", vor_komma(Pressure), nach_komma(Pressure));
-		altitude = calcalt(Pressure, qnh);
-	*/
 	
 	}//end of while
 

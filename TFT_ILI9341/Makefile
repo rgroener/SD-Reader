@@ -78,8 +78,7 @@ OBJDIR = obj
 
 
 # List C source files here. (C dependencies are automatically generated.)
-SRC = $(TARGET).c 	ili9341.c 	ili9341gfx.c grn_UART.c grn_TWI.c
-
+SRC = $(TARGET).c 	ili9341.c 	ili9341gfx.c grn_UART.c sd_raw.c partition.c fat.c byteordering.c
 
 # List C++ source files here. (C dependencies are automatically generated.)
 CPPSRC = 
